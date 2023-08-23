@@ -5,6 +5,21 @@ let header = document.querySelector('#header');
 let portfolio = document.querySelector('#Portfolio');
 let contact = document.querySelector('#Contact');
 let navs = document.querySelectorAll('.navbar a');
+let boton = document.getElementById('box-menu');
+let navbar2 = document.getElementById('navbar')
+
+boton.onclick=ocultar;
+var auxiliar = 0
+function ocultar(){
+    if (auxiliar == 0){
+        navbar2.classList.add('show-nav');
+        auxiliar = 1;
+    }
+    else if (auxiliar==1){
+        navbar2.classList.remove('show-nav');
+        auxiliar = 0;
+    }
+}
 
 var alturaScroll = header.offsetTop;
 var alturaAbout = About.offsetTop;
