@@ -60,10 +60,12 @@ function mostrarAbout(){
     }
 }
 
+
+
 function cambiarNav(){
     let scrollTop = document.documentElement.scrollTop;
     
-    if (alturaScroll + 400 < scrollTop){
+    if (alturaScroll + 300 < scrollTop){
         header.style.background = 'black';
     }
     else{

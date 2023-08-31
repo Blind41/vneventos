@@ -225,7 +225,7 @@ body{
 }
 
 #service:hover{
-    scale: 1.01;
+    scale: 1.06;
 }
 
 #service img{
@@ -268,11 +268,14 @@ body{
 
 #Services #titulo{
     opacity: 0;
+}
+
+#titulo{
     transition: 0.6s;
     padding-bottom: 2%;
     padding-top: 8%;
 }
-#Services #titulo h1{
+#titulo h1{
     padding-bottom: 1%;
 }
 
@@ -351,3 +354,74 @@ body{
     padding-top: 10%;
 }
 
+#contact-content{
+    width: 50%;
+    background-color: white;
+    color: black;
+    margin: auto;
+}
+
+#contact-content h2{
+    color: rgb(0, 23, 36);;
+}
+
+#contact-content form{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    padding-top: 8%;
+    justify-content: space-between;
+}
+
+.contact-box-input{
+    padding-top: 3%;
+    text-align: left;
+    position: relative;
+    padding-bottom: 10%;
+}
+
+.contact-box-input input, .contact-box-input textarea{
+    font-size: 1rem;
+    width: 100%;
+    resize: none;
+    border: none;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.445);
+    padding-top: 5px;
+}
+
+.contact-box-input span{
+    color: rgb(92, 92, 92);
+    position: absolute;
+    left: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.contact-box-input input:focus ~ span,
+.contact-box-input textarea:focus ~ span,
+.contact-box-input input:valid ~ span,
+.contact-box-input textarea:valid ~ span{
+    transform: translateY(-15px);
+    font-size: 90%;
+    font-weight: 400;
+}
+
+#contact-content h2{
+    padding-top: 8%;
+}
+
+#contact-content button{
+    padding: 4%;
+    margin-bottom: 10%;
+    width: 100%;
+}
+#contact-content button:hover{
+    scale: 1.02;
+    transition: 0.2s;
+}
+
+
+footer{
+    height: 20vh;
+}
