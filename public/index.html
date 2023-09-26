@@ -13,14 +13,15 @@
 </head>
 <body>
     <header id="header">
-        <a href="#" class="logo">VN Eventos.</a>        
-        <div class="bx bx-menu" id="box-menu"></div>
+        <a href="#" class="logo">VN Eventos.</a>
+        <div class="bx bx-menu" id="box-menu" for="menu-checkbox"></div>
+        
         <nav class="navbar" id="navbar">
             
             <a href="#" class="active">Inicio</a>
             <a href="#About">Nosotros</a>
             <a href="#Services">Servicios</a>
-            <a href="#Portfolio">Portfolio</a>
+            <a href="#Portfolio">Galería</a>
             <a href="#Contact">Contacto</a>            
         </nav>
     </header>
@@ -37,8 +38,8 @@
                 Contamos con un equipo dinámico y experimentado.</h2>
     
             <h3>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga nulla deleniti tempore 
-                    sunt laborum sed blanditiis quis nam dolore, amet voluptates officia possimus nihil, 
-                    aliquid inventore quisquam. Ab, similique necessitatibus?</h3>
+                sunt laborum sed blanditiis quis nam dolore, amet voluptates officia possimus nihil, 
+                aliquid inventore quisquam. Ab, similique necessitatibus?</h3>
 
                     <div id="about-bottom">
                     </div>
@@ -104,7 +105,7 @@
         
                 <article id="service">
                     <header id="service-header">
-                        <img src="./vneventos2.png">
+                        <img src=".//DSC00294.jpg">
                         <div id="title">DJ's<p>_____</p></div>
                     </header>
                     <p id="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod commodi
@@ -120,32 +121,75 @@
 
         <section id="Portfolio">
             <header id="titulo">
-                <h1>Portfolio</h1>
+                <h1>Galería</h1>
                 <h1>______</h1>
             </header>
 
             <article id="portfolio-container">
 
-                <button id="container-btn">
-                    <i class='bx bx-chevron-left' id="left-btn"></i>
-                    <i class='bx bx-chevron-right' id="right-btn"></i>
-                </button>
-
                 <div id="portfolio-bottom"></div>
 
-                <section id="portfolio-photo">
-                    <article id="photo-content" class="active-photo">
-                        <img src="./vneventos2.png">
-                    </article>
-                    <article id="photo-content">
-                        <img src="./vneventos2.png">
-                    </article>
-                    <article id="photo-content">
-                        <img src="./vneventos2.png">
-                    </article>
-                    <article id="photo-content">
-                        <img src="./vneventos2.png">
-                    </article>
+                <section id="gallery-container">
+                    <div id="grid-column-1">
+                        <div id="gallery-item">
+                            <img src="DSC00245.jpg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="DSC00291.jpg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/9.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/1.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/5.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/4.jpeg" alt="" id="gallery-img">
+                        </div>
+                    </div>
+
+                    <div id="grid-column-2">
+                        <div id="gallery-item">
+                            <img src="./galeria/11.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/3.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/2.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/18.jpeg" alt="" id="gallery-img">
+                        </div>
+                    </div>
+
+                    <div id="grid-column-3">
+                        
+                        <div id="gallery-item">
+                            <img src="./galeria/6.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/7.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/8.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/20.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/23.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/19.jpeg" alt="" id="gallery-img">
+                        </div>
+                        <div id="gallery-item">
+                            <img src="./galeria/15.jpeg" alt="" id="gallery-img">
+                        </div>
+                    </div>
                     
                 </section>
                 
@@ -162,27 +206,27 @@
 
                 <h2>Envianos un mensaje</h2>
 
-                <form action="index.html" method="post">
-                        <div id="contact-name" class="contact-box-input">
-                            <input type="text" required></input>
-                            <span>Nombre</span>
-                        </div>
+                <form action="https://formsubmit.co/andresyacante41@gmail.com" method="POST">
+                    <div id="contact-name" class="contact-box-input">
+                        <input type="text" required name="Nombre"></input>
+                        <span>Nombre</span>
+                    </div>
 
-                        <div id="contact-email" class="contact-box-input">
-                            <input type="text" required></input>
-                            <span>E-mail</span>
-                        </div>
+                    <div id="contact-email" class="contact-box-input">
+                        <input type="text" required name="E-mail"></input>
+                        <span>E-mail</span>
+                    </div>
 
-                        <div id="contact-phone" class="contact-box-input">
-                            <input type="text" required></input>
-                            <span>Teléfono</span>
-                        </div>
-                        <div id="contact-msg" class="contact-box-input">
-                            <textarea cols="20" rows="5" required></textarea>
-                            <span>Mensaje</span>
-                        </div>
+                    <div id="contact-phone" class="contact-box-input">
+                        <input type="text" required name="Teléfono"></input>
+                        <span>Teléfono</span>
+                    </div>
+                    <div id="contact-msg" class="contact-box-input">
+                        <textarea cols="20" rows="5" required name="mensaje"></textarea>
+                        <span>Mensaje</span>
+                    </div>
 
-                        <button>Enviar</button>
+                    <button>Enviar</button>
 
                 </form>
             </article>
@@ -190,12 +234,13 @@
         </section>
     </main>
 
-    <footer>
+    <footer id="footer">
         <a href="#">Whatsapp</a>
         <a href="#">Instagram</a>
     </footer>
 
-    <script src="./scripts.js"></script>
+    
 
 </body>
+<script src="./scripts.js"></script>
 </html>
