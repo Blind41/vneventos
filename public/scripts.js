@@ -2,6 +2,7 @@ let service = document.querySelectorAll("#service");
 let title = document.querySelector("#titulo");
 let About = document.querySelector("#About");
 let header = document.querySelector('#header');
+let body = document.querySelector('body');
 let portfolio = document.querySelector('#Portfolio');
 let contact = document.querySelector('#Contact');
 let navs = document.querySelectorAll('.navbar a');
@@ -131,3 +132,7 @@ window.addEventListener('scroll', mostrarServicios);
 window.addEventListener('scroll', cambiarNav);
 window.addEventListener('scroll', scroller);
 window.addEventListener('scroll', reestablecerScroll);
+window.onload = function(){
+    body.classList.add('mostrar');
+}
+
