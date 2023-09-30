@@ -16,12 +16,11 @@ main{
 }
 
 #title p{
-    text-shadow:
-		0 0 15px rgb(0, 38, 255);
+    text-shadow: 0 0 5px rgb(0, 252, 13);
 }
 
 #title{
-    text-shadow: 0 0 2px rgb(0, 252, 13);
+    text-shadow: 0 0 15px rgb(3, 35, 218);
 }
 
 h1{
@@ -229,6 +228,11 @@ body:not(.mostrar){
     }
     #service #title{
         padding-top: 3%;
+    }
+    #header{
+        height: 50px;
+        padding-left: 30px;
+        padding-right: 30px;
     }
 }
 
