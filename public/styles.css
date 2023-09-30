@@ -15,21 +15,35 @@ main{
     margin: auto;
 }
 
+#title p{
+    text-shadow:
+		0 0 15px rgb(0, 38, 255);
+}
+
+#title{
+    text-shadow: 0 0 2px rgb(0, 252, 13);
+}
+
 h1{
     font-size: 170%;
     padding-bottom: 3rem;
     color: white;
+    text-shadow:
+		0 0 10px rgb(105, 12, 228);
+    font-weight: bold;
 }
 
-h2{
+#About h2{
     font-size: 130%;
     color: rgb(214, 214, 214);
+    text-shadow:
+		0 0 5px rgb(17, 122, 100);
 }
 
 h3{
     padding-top: 6rem;
     font-size: 90%;
-    color: rgb(150, 150, 150);
+    color: rgb(148, 148, 148);
 }
 
 body{
@@ -44,14 +58,14 @@ body{
 body:not(.mostrar){
     opacity: 0;
     overflow-y: hidden;
-    background-color: white;
+    background-image: linear-gradient(to right, #040b24, #020e24, #001124, #001324, #001524, #011524, #021525, #031525, #071325, #0c1124, #110e23, #150b21);
 }
 
 .logo{
     font-size: 1.6rem;
     color: rgb(255, 255, 255);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: bold;
 }
 
 .active{
@@ -65,7 +79,7 @@ body:not(.mostrar){
 .navbar a{
     font-size: 90%;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: bold;
     margin-left: 35px;
     transition: 0.38s;
 }
