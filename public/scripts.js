@@ -3,6 +3,7 @@ let title = document.querySelector("#titulo");
 let About = document.querySelector("#About");
 let header = document.querySelector('#header');
 let body = document.querySelector('body');
+let main = document.querySelector('main');
 let portfolio = document.querySelector('#Portfolio');
 let contact = document.querySelector('#Contact');
 let navs = document.querySelectorAll('.navbar a');
@@ -21,6 +22,14 @@ function ocultar(){
         auxiliar = 0;
     }
 }
+
+function ocultar2(){
+    if (auxiliar==1){
+        navbar2.classList.remove('show-nav');
+        auxiliar=0
+    }
+}
+main.onclick=ocultar2;
 
 var alturaScroll = header.offsetTop;
 var alturaAbout = About.offsetTop;
