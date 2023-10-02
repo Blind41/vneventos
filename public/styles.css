@@ -121,7 +121,7 @@ body:not(.mostrar){
     top: 0;
     left: 0;
     width: 100%;
-    padding-left: 50px;
+    padding-left: 65px;
     padding-right: 50px;
     display: flex;
     justify-content:space-between;
@@ -129,6 +129,13 @@ body:not(.mostrar){
     z-index: 100;
     background: linear-gradient( to bottom, #0e0c1fa1, #ffffff00);
     transition: 0.5s;
+}
+
+.logo img{
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    width: 40px;
 }
 
 #About{
@@ -231,8 +238,14 @@ body:not(.mostrar){
     }
     #header{
         height: 50px;
-        padding-left: 30px;
+        padding-left: 50px;
         padding-right: 30px;
+    }
+    .logo img{
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        width: 30px;
     }
 }
 
