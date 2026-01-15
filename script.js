@@ -697,20 +697,30 @@ async function initGallery() {
         galleryTrack.appendChild(setDiv);
     }
 
-    // Configuración inicial del scroll
-    // Esperamos 1 frame para que el layout se calcule
-    requestAnimationFrame(() => {
-        const sets = document.querySelectorAll('.gallery-set');
-        if (sets.length > 0) {
-            setWidth = sets[0].offsetWidth; // Ancho de un solo set (incluyendo gaps internos)
-            // Agregamos un pequeño ajuste por el gap externo entre sets si existiera, 
-            // pero como usamos padding en .gallery-set para el gap, offsetWidth debería ser correcto o casi.
+    // Initial Position
+    // Centrar en el Set 2 (Original)
+    // Esperamos a que el layout se asiente un poco
+    setTimeout(() => {
+        // Calcular ancho del set
+        // Tomamos el ancho total y dividimos por 3 (sets)
+        // O mejor: sumamos anchos de columnas
+        // Como es grid-auto-columns: 280px + gap 15px.
+        // Aproximación: tenemos 3 sets idénticos.
+        // singleSetWidth = galleryTrack.scrollWidth / 3; 
+        // Mejor calculamos basado en contenido real
 
-            // Centrar scroll en el Set 1 (El del medio)
-            galleryTrack.scrollLeft = setWidth;
-        }
-    });
+        // Medir un item y multiplicar por cantidad real o usar scrollWidth/3
+        singleSetWidth = galleryTrack.scrollWidth / 3;
 
+        // Posicionar en el medio (Set 2)
+        galleryTrack.scrollLeft = singleSetWidth;
+        currentGalleryPosition = singleSetWidth;
+
+        // Loop Init
+        targetScrollX = currentGalleryPosition;
+        requestAnimationFrame(scrollRenderLoop);
+
+    }, 100);
     // Evento de Scroll Infinito
     galleryTrack.addEventListener('scroll', handleInfiniteScroll);
 }
@@ -733,43 +743,87 @@ function handleInfiniteScroll() {
     }
 }
 
-// Custom Cubic Bezier easing for smoother scroll
-function smoothScrollTo(element, target, duration) {
-    const start = element.scrollLeft;
-    const change = target - start;
-    const startTime = performance.now();
+// === ROBUST ANIMATION LOOP ===
+let targetScrollX = 0;
+let isAnimating = true;
 
-    function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
+// Config
+const LERP_FACTOR = 0.1; // Suavidad (Menor = Más lento/suave, Mayor = Rápido)
+const ERROR_MARGIN = 0.5;
+
+function scrollRenderLoop() {
+    if (!galleryTrack) return;
+
+    // 1. Leer posición actual
+    let currentX = galleryTrack.scrollLeft;
+
+    // 2. Si estamos arrastrando, el target sigue al drag para evitar saltos al soltar
+    if (isGalleryDragging || isDown) {
+        targetScrollX = currentX;
     }
 
-    function animateScroll(currentTime) {
-        const timeElapsed = currentTime - startTime;
-        if (timeElapsed < duration) {
-            const progress = easeOutCubic(timeElapsed / duration);
-            element.scrollLeft = start + change * progress;
-            requestAnimationFrame(animateScroll);
-        } else {
-            element.scrollLeft = target;
-        }
+    // 3. Interpolación (Smooth Follow)
+    // dX = (Meta - Actual) * Factor
+    let diff = targetScrollX - currentX;
+
+    if (Math.abs(diff) > ERROR_MARGIN) {
+        let nextX = currentX + diff * LERP_FACTOR;
+        galleryTrack.scrollLeft = nextX;
+        currentX = nextX; // Actualizar referencia local
+    } else {
+        // Snap final para evitar micro-jitter
+        // galleryTrack.scrollLeft = targetScrollX; 
+        // No hacemos snap forzado para permitir drag
     }
 
-    requestAnimationFrame(animateScroll);
+    // 4. Infinite Loop Check (Virtual)
+    // El 'set' mide 'singleSetWidth'.
+    // Si pasamos el Set 3 (Right), volvemos al Set 2.
+    // Set 1 (Left) -> Set 2.
+
+    // Límites para salto
+    const lowerBound = singleSetWidth * 0.5;
+    const upperBound = singleSetWidth * 2.5;
+
+    if (currentX < lowerBound) {
+        // Estamos muy a la izquierda -> Saltar a la derecha
+        const jump = singleSetWidth;
+        galleryTrack.scrollLeft += jump;
+        targetScrollX += jump; // IMPORTANT: Shift target too!
+    } else if (currentX > upperBound) {
+        // Estamos muy a la derecha -> Saltar a la izquierda
+        const jump = singleSetWidth;
+        galleryTrack.scrollLeft -= jump;
+        targetScrollX -= jump; // IMPORTANT: Shift target too!
+    }
+
+    requestAnimationFrame(scrollRenderLoop);
 }
 
-// Navegación Manual (Botones) con animación custom
+// Iniciar Loop
+// Aseguramos que singleSetWidth esté definido. Se define en initGallery.
+// Lo llamaremos al final de initGallery.
+
+// Navegación Manual (Botones)
 function galleryPrev() {
-    const target = galleryTrack.scrollLeft - columnWidth;
-    smoothScrollTo(galleryTrack, target, 400); // 400ms duration
+    targetScrollX -= columnWidth;
 }
 
 function galleryNext() {
-    const target = galleryTrack.scrollLeft + columnWidth;
-    smoothScrollTo(galleryTrack, target, 400);
+    targetScrollX += columnWidth;
 }
 
 if (galleryNavLeft) galleryNavLeft.addEventListener('click', galleryPrev);
 if (galleryNavRight) galleryNavRight.addEventListener('click', galleryNext);
+
+
+// Drag Logic Update (Sync Target)
+// ... (Se mantiene la lógica de drag, pero ya no necesitamos 'isDown' manejando el scroll directamente si queremos que el loop lo haga,
+// PERO para drag directo es mejor dejar que el mouse controle y updatear el target)
+
+// El drag logic original (abajo) modifica scrollLeft directamente.
+// En el loop: if (isGalleryDragging) targetScrollX = currentX;
+// Esto sincroniza el sistema cuando el usuario suelta.
 
 // Drag Logic (Mouse)
 let isDown = false;
@@ -828,14 +882,23 @@ galleryTrack.addEventListener('touchmove', (e) => {
     galleryTrack.scrollLeft = touchScrollLeft + walk;
 });
 
-// === LIGHTBOX UPDATED ===
+// === LIGHTBOX ADVANCED ===
+const lightboxPrevImg = document.getElementById('lightbox-prev-img');
+const lightboxNextImg = document.getElementById('lightbox-next-img');
+
+let isZoomed = false;
+let isPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+let translateX = 0;
+let translateY = 0;
+let scale = 1;
+
 function openLightbox(index) {
     if (isGalleryDragging) return;
 
     currentLightboxIndex = index;
-    // Reset classes
-    lightboxImage.className = 'lightbox-image';
-    lightboxImage.src = allImages[index].src;
+    updateLightboxContent(false); // No animation on open
 
     galleryLightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -844,57 +907,133 @@ function openLightbox(index) {
 function closeLightbox() {
     galleryLightbox.classList.remove('active');
     document.body.style.overflow = '';
-    // Clean up
-    setTimeout(() => {
-        lightboxImage.className = 'lightbox-image';
-    }, 300);
+    resetZoom();
 }
 
-function switchLightboxImage(direction) {
-    // 1. Fase de Salida
-    if (direction === 'next') {
-        lightboxImage.classList.add('slide-out-left');
+function updateLightboxContent(animate = true) {
+    // 1. Calcular índices
+    const total = allImages.length;
+    const prevIndex = (currentLightboxIndex - 1 + total) % total;
+    const nextIndex = (currentLightboxIndex + 1) % total;
+
+    // 2. Actualizar fuentes
+    // Main
+    const mainSrc = allImages[currentLightboxIndex].src;
+
+    if (animate) {
+        // Simple fast fade/pop
+        lightboxImage.style.transform = 'scale(0.95)';
+        lightboxImage.style.opacity = '0.5';
+
+        setTimeout(() => {
+            lightboxImage.src = mainSrc;
+            lightboxImage.style.transform = 'scale(1)';
+            lightboxImage.style.opacity = '1';
+        }, 150); // Muy rápido: 150ms
     } else {
-        lightboxImage.classList.add('slide-out-right');
+        lightboxImage.src = mainSrc;
     }
 
-    // 2. Esperar a que salga (400ms matches CSS)
-    setTimeout(() => {
-        // Calcular índice
-        if (direction === 'next') {
-            currentLightboxIndex = (currentLightboxIndex + 1) % allImages.length;
-        } else {
-            currentLightboxIndex = (currentLightboxIndex - 1 + allImages.length) % allImages.length;
-        }
+    // Context (sin animación para instantaneidad o con fade simple si CSS lo maneja)
+    if (lightboxPrevImg) lightboxPrevImg.src = allImages[prevIndex].src;
+    if (lightboxNextImg) lightboxNextImg.src = allImages[nextIndex].src;
 
-        // Cambiar src
-        lightboxImage.src = allImages[currentLightboxIndex].src;
-
-        // 3. Preparar entrada (Teletransportar al lado opuesto sin transición)
-        lightboxImage.className = 'lightbox-image'; // Reset base
-        if (direction === 'next') {
-            lightboxImage.classList.add('prepare-right');
-        } else {
-            lightboxImage.classList.add('prepare-left');
-        }
-
-        // Forzar reflow para que el navegador "vea" la posición inicial
-        void lightboxImage.offsetWidth;
-
-        // 4. Animar entrada (Quitar clase de preparación para volver a estado neutral)
-        lightboxImage.className = 'lightbox-image';
-
-    }, 400);
+    resetZoom();
 }
 
 function showPrevImage() {
-    switchLightboxImage('prev');
+    currentLightboxIndex = (currentLightboxIndex - 1 + allImages.length) % allImages.length;
+    updateLightboxContent(true);
 }
 
 function showNextImage() {
-    switchLightboxImage('next');
+    currentLightboxIndex = (currentLightboxIndex + 1) % allImages.length;
+    updateLightboxContent(true);
 }
 
+// --- ZOOM & PAN LOGIC ---
+
+function resetZoom() {
+    isZoomed = false;
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    updateTransform();
+    lightboxImage.classList.remove('zoomed');
+    lightboxImage.style.cursor = 'zoom-in';
+}
+
+function toggleZoom(e) {
+    if (isZoomed) {
+        resetZoom();
+    } else {
+        isZoomed = true;
+        scale = 2; // Zoom 2x
+        lightboxImage.classList.add('zoomed');
+        lightboxImage.style.cursor = 'grab';
+
+        // Opcional: Centrar zoom en el punto del click (avanzado)
+        // Por ahora zoom al centro simple para robustez
+        updateTransform();
+    }
+}
+
+function updateTransform() {
+    lightboxImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+}
+
+// Drag Logic (Solo cuando está zoomed)
+lightboxImage.addEventListener('mousedown', (e) => {
+    if (!isZoomed) return;
+    isPanning = true;
+    panStartX = e.clientX - translateX;
+    panStartY = e.clientY - translateY;
+    lightboxImage.classList.add('dragging');
+    e.preventDefault();
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (!isPanning || !isZoomed) return;
+    e.preventDefault();
+
+    // Calcular límites dinámicamente
+    // Al estar scale=2, la imagen mide el doble.
+    // El desplazamiento máximo permitido desde el centro es la mitad del ancho extra.
+    // ancho_extra = width * (scale - 1)
+    // limite hacia un lado = ancho_extra / 2
+
+    const rect = lightboxImage.getBoundingClientRect();
+    // Nota: getBoundingClientRect ya considera el scale actual, así que usamos offsetWidth (tamaño base)
+    const baseWidth = lightboxImage.offsetWidth;
+    const baseHeight = lightboxImage.offsetHeight;
+
+    // Limite = (AnchoBase * Scale - AnchoBase) / 2
+    // Simplificado para Scale=2: (W*2 - W)/2 = W/2
+    const limitX = (baseWidth * (scale - 1)) / 2;
+    const limitY = (baseHeight * (scale - 1)) / 2;
+
+    let nextX = e.clientX - panStartX;
+    let nextY = e.clientY - panStartY;
+
+    // Clamping (Restringir al límite)
+    translateX = Math.max(-limitX, Math.min(nextX, limitX));
+    translateY = Math.max(-limitY, Math.min(nextY, limitY));
+
+    updateTransform();
+});
+
+window.addEventListener('mouseup', () => {
+    if (isPanning) {
+        isPanning = false;
+        lightboxImage.classList.remove('dragging');
+    }
+});
+
+// Double click to zoom
+lightboxImage.addEventListener('dblclick', toggleZoom);
+
+
+// Listeners básicos
 if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
 if (lightboxPrev) lightboxPrev.addEventListener('click', showPrevImage);
 if (lightboxNext) lightboxNext.addEventListener('click', showNextImage);
@@ -908,8 +1047,10 @@ document.addEventListener('keydown', (e) => {
 });
 
 galleryLightbox.addEventListener('click', (e) => {
-    if (e.target === galleryLightbox) closeLightbox();
+    // Cerrar solo si click en el fondo (no imagen)
+    if (e.target === galleryLightbox || e.target.classList.contains('lightbox-content')) {
+        closeLightbox();
+    }
 });
 
-// Inicializar galería cuando cargue la página
 initGallery();

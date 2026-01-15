@@ -1283,6 +1283,7 @@ section {
 }
 
 /* Gallery Lightbox */
+/* Lightbox Advanced */
 .gallery-lightbox {
     position: fixed;
     top: 0;
@@ -1294,28 +1295,97 @@ section {
     display: none;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    perspective: 1500px;
+    /* Perspectiva global para el efecto 3D */
 }
 
 .gallery-lightbox.active {
     display: flex;
+    opacity: 1;
 }
 
 .lightbox-content {
     position: relative;
-    width: 90%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: visible;
+    /* IMPORTANTE: Permitir ver imágenes laterales */
+    transform-style: preserve-3d;
+}
+
+/* Imagen Central Wrapper */
+.lightbox-main-wrapper {
+    position: relative;
+    z-index: 30;
+    /* Arriba de todo */
+    max-width: 70%;
+    /* Más estrecho para dejar ver los lados */
+    max-height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
 .lightbox-image {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    border-radius: 10px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    cursor: zoom-in;
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+    transform-origin: center center;
+    user-select: none;
+    backface-visibility: hidden;
+    /* Limpieza 3D */
 }
 
+/* Estado Zoom */
+.lightbox-image.zoomed {
+    cursor: grab;
+    transition: transform 0.1s linear;
+}
+
+.lightbox-image.zoomed.dragging {
+    cursor: grabbing;
+    transition: none;
+}
+
+/* Context Images (Carrusel 3D) */
+.lightbox-context-img {
+    position: absolute;
+    top: 50%;
+    height: 45%;
+    width: auto;
+    opacity: 0.5;
+    /* Más visible */
+    filter: blur(2px) grayscale(40%) brightness(0.6);
+    z-index: 10;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+.context-prev {
+    left: 2%;
+    transform-origin: center left;
+    transform: translateY(-50%) rotateY(25deg) scale(0.9);
+}
+
+.context-next {
+    right: 2%;
+    transform-origin: center right;
+    transform: translateY(-50%) rotateY(-25deg) scale(0.9);
+}
+
+/* Botones Cierre y Nav */
 .lightbox-close {
     position: absolute;
     top: 20px;
@@ -1333,7 +1403,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 20;
 }
 
 .lightbox-close:hover {
