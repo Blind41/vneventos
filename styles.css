@@ -786,6 +786,7 @@ section {
     border-radius: 2px;
     outline: none;
     -webkit-appearance: none;
+    appearance: none;
 }
 
 .volume-slider {
