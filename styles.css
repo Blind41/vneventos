@@ -49,6 +49,7 @@ body {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -56,21 +57,31 @@ body {
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
         transform: translateX(-50%) translateY(0);
     }
+
     40% {
         transform: translateX(-50%) translateY(-10px);
     }
+
     60% {
         transform: translateX(-50%) translateY(-5px);
     }
 }
 
 @keyframes pulseGlow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
     }
+
     50% {
         box-shadow: 0 0 50px rgba(102, 126, 234, 0.6);
     }
@@ -80,6 +91,7 @@ body {
     0% {
         transform: translateX(0);
     }
+
     100% {
         transform: translateX(-50%);
     }
@@ -239,7 +251,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
         radial-gradient(circle at 80% 50%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
     z-index: 1;
@@ -1127,50 +1139,79 @@ section {
     opacity: 1;
 }
 
+/* Gallery Wrapper - Contenedor principal con scroll oculto */
 .gallery-wrapper {
+    position: relative;
+    width: 100%;
     overflow: hidden;
-    margin: 0 60px;
-    cursor: grab;
+    /* Ocultamos el scrollbar nativo visualmente */
+    margin: 0;
+    padding: 0;
     user-select: none;
+    -webkit-user-select: none;
 }
 
-.gallery-wrapper.dragging {
+/* Track - Contenedor Flex que tiene los Sets */
+.gallery-track {
+    display: flex;
+    overflow-x: auto;
+    /* Scroll horizontal nativo */
+    scroll-behavior: auto;
+    /* Controlado por JS para el loop */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+    width: 100%;
+    cursor: grab;
+}
+
+.gallery-track::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+}
+
+.gallery-track.active {
     cursor: grabbing;
 }
 
-.gallery-wrapper.dragging .gallery-track {
-    transition: none;
-}
-
-.gallery-track {
-    display: flex;
-    gap: 15px;
-    transition: transform 0.3s ease-out;
-    will-change: transform;
-}
-
-.gallery-column {
+/* Set - Cada bloque de imágenes (Original y Clones) */
+.gallery-set {
     display: grid;
-    grid-auto-rows: 200px;
-    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, 280px);
+    /* 2 filas fijas */
+    grid-auto-flow: column dense;
+    /* Masonry horizontal */
+    grid-auto-columns: 280px;
     gap: 15px;
-    width: 350px;
+    padding: 0 7.5px;
+    /* Mitad del gap para unir sets */
     flex-shrink: 0;
+    /* Evitar que se aplasten */
 }
 
+/* Items */
 .gallery-item {
     position: relative;
     overflow: hidden;
     border-radius: 15px;
     cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background: var(--glass-bg);
 }
 
-.gallery-item.span-2 {
+.gallery-item.span-col-2 {
+    grid-column: span 2;
+}
+
+.gallery-item.span-row-2 {
     grid-row: span 2;
 }
 
-.gallery-item.span-3 {
-    grid-row: span 3;
+.gallery-item.span-2x2 {
+    grid-column: span 2;
+    grid-row: span 2;
 }
 
 .gallery-image {
@@ -1382,10 +1423,10 @@ section {
     transition: var(--transition);
 }
 
-.form-group input:focus + label,
-.form-group textarea:focus + label,
-.form-group input:valid + label,
-.form-group textarea:valid + label {
+.form-group input:focus+label,
+.form-group textarea:focus+label,
+.form-group input:valid+label,
+.form-group textarea:valid+label {
     top: -10px;
     left: 15px;
     font-size: 12px;
@@ -1455,7 +1496,7 @@ section {
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 1024px) {
-    
+
     .music-section.music-dropdown {
         width: 350px;
     }
@@ -1473,9 +1514,10 @@ section {
     .gallery-column {
         width: 300px;
     }
+
     .lightbox-nav-left {
-    display: none;
-    }   
+        display: none;
+    }
 
     .lightbox-nav-right {
         right: 20px;
@@ -1526,7 +1568,8 @@ section {
     .sticky-player-content {
         display: grid !important;
         grid-template-columns: repeat(11, 1fr) !important;
-        grid-template-rows: 1fr !important; /* Solo una fila */
+        grid-template-rows: 1fr !important;
+        /* Solo una fila */
         gap: 8px;
         padding: 8px 10px;
         align-items: center;
@@ -1565,8 +1608,10 @@ section {
     }
 
     .sticky-player-info {
-        grid-column: 1 / 5;    /* Columnas 1-5 (5 columnas) */
-        grid-row: 1 / 2;       /* Fila 1 */
+        grid-column: 1 / 5;
+        /* Columnas 1-5 (5 columnas) */
+        grid-row: 1 / 2;
+        /* Fila 1 */
         overflow: hidden;
     }
 
@@ -1589,16 +1634,20 @@ section {
     }
 
     .sticky-player-volume {
-        grid-column: 8 / 10;   /* Columnas 9-10 (2 columnas) */
-        grid-row: 1 / 2;       /* Fila 1 */
+        grid-column: 8 / 10;
+        /* Columnas 9-10 (2 columnas) */
+        grid-row: 1 / 2;
+        /* Fila 1 */
         display: flex;
         justify-content: flex-start;
         align-items: center;
     }
 
     .sticky-player-controls {
-        grid-column: 5 / 8;    /* Columnas 6-8 (3 columnas) */
-        grid-row: 1 / 2;       /* Fila 1 */
+        grid-column: 5 / 8;
+        /* Columnas 6-8 (3 columnas) */
+        grid-row: 1 / 2;
+        /* Fila 1 */
         display: flex;
         transform: translateX(-3px);
         justify-content: space-around;
@@ -1607,8 +1656,10 @@ section {
     }
 
     .sticky-playlist-btn {
-        grid-column: 10 / 12;  /* Columna 11 (1 columna) */
-        grid-row: 1 / 2;       /* Fila 1 */
+        grid-column: 10 / 12;
+        /* Columna 11 (1 columna) */
+        grid-row: 1 / 2;
+        /* Fila 1 */
         justify-self: end;
         width: 30px;
         height: 30px;
