@@ -79,20 +79,47 @@ const tracks = [
     }
 ];
 
+// Función para mezclar array aleatoriamente (Fisher-Yates shuffle)
+function shuffleArray(array) {
+    const shuffled = [...array]; // Crear copia para no mutar el original
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
 // Array de imágenes de la galería con sus relaciones de aspecto
 // Puedes reemplazar con tus propias imágenes
-const galleryImages = [
-    'https://picsum.photos/800/800?random=1',
-    'https://picsum.photos/800/400?random=2', // Landscape -> Span 2 cols
-    'https://picsum.photos/400/800?random=3', // Portrait -> Span 2 rows
-    'https://picsum.photos/800/600?random=4',
-    'https://picsum.photos/800/800?random=5',
-    'https://picsum.photos/800/400?random=6',
-    'https://picsum.photos/800/1200?random=7', // Tall
-    'https://picsum.photos/1200/800?random=8', // Wide
-    'https://picsum.photos/800/800?random=9',
-    'https://picsum.photos/800/400?random=10'
+const galleryImagesOriginal = [
+    'img/15_1.png',
+    'img/15.png',
+    'img/bar.png',
+    'img/Capture.png',
+    'img/Capture2.png',
+    'img/Capture3.png',
+    'img/Capture4.png',
+    'img/Capture5.png',
+    'img/Capture6.png',
+    'img/carpa.png',
+    'img/casorio.png',
+    'img/casorio2.png',
+    'img/cepa.png',
+    'img/hankook.png',
+    'img/LaLucila.png',
+    'img/lalucila2.png',
+    'img/lalucila3.png',
+    'img/ledesma.png',
+    'img/ledesma2.png',
+    'img/nordelta.png',
+    'img/nordelta2.png',
+    'img/nordelta3.png',
+    'img/regata.png',
+    'img/regata1.png'
 ];
+
+// Mezclar las imágenes aleatoriamente
+const galleryImages = shuffleArray(galleryImagesOriginal);
 
 // Toggle del menú móvil
 navToggle.addEventListener('click', () => {
@@ -640,8 +667,8 @@ let isScrolling = false;
 // Función para determinar el span
 function determineSpan(width, height) {
     const ratio = width / height;
-    if (ratio > 1.5) return 'span-col-2';
-    if (ratio < 0.7) return 'span-row-2';
+    if (ratio > 1.215) return 'span-col-2';
+    if (ratio < 0.75) return 'span-row-2';
     if (width > 2000 && height > 2000) return 'span-2x2';
     return '';
 }
